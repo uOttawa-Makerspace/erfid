@@ -1,3 +1,5 @@
+# ERFID: a rfid
+# Copyright (C) 2015 Wesley Ellis
 require 'json'
 require 'faraday'
 require 'nfc'
