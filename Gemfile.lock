@@ -1,7 +1,6 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    daemons (1.2.3)
     faraday (0.9.1)
       multipart-post (>= 1.2, < 3)
     multipart-post (2.0.0)
@@ -11,6 +10,5 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  daemons
   faraday
   nfc
