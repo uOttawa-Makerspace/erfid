@@ -3,6 +3,7 @@
 require 'json'
 require 'faraday'
 require 'nfc'
+require "pi_piper"
 
 ## ERROR CODES
 NO_TAG = -90
@@ -47,6 +48,24 @@ def error(message)
   exit(-1)
 end
 
+def display_success
+  @green_led ||= PiPiper::Pin.new(:pin => 23, :direction => :out)
+  3.times do
+    @green_led.on
+    sleep(0.5)
+    @green_led.off
+  end
+end
+
+def display_error
+  @red_led ||= PiPiper::Pin.new(:pin => 24, :direction => :out)
+  3.times do
+    @red_led.on
+    sleep(0.5)
+    @red_led.off
+  end
+end
+
 #catch interupt and log shutdown
 trap('INT') {
   log("Shutting down")
@@ -80,10 +99,11 @@ def main
 
     if response.success?
       log("Successfully sent #{card}")
+      display_success() #takes 1.5 seconds
     else
       log("ERROR: got #{response.status} sending #{card}: #{response.body}")
+      display_error() #takes 1.5 seconds
     end
-    sleep(1) #delay a bit to avoid double send
   end
 end
 
