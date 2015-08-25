@@ -10,7 +10,7 @@ NO_TAG = -90
 DISCONNECTED = -1
 
 def read_config
-  JSON.parse(File.read("config.json"))
+  JSON.parse(File.read(File.join(File.dirname(__FILE__),"./config.json")))
 end
 
 def get_reader
