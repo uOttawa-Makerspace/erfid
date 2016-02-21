@@ -89,20 +89,24 @@ def main
   reader = get_reader()
 
   loop do
-    card = read_card(reader)
+    begin
+      card = read_card(reader)
 
-    next unless card #failed to read card
+      next unless card #failed to read card
 
-    log("Read card: #{card}")
+      log("Read card: #{card}")
 
-    response = send_card(card, config)
+      response = send_card(card, config)
 
-    if response.success?
-      log("Successfully sent #{card}")
-      display_success() #takes 1.5 seconds
-    else
-      log("ERROR: got #{response.status} sending #{card}: #{response.body}")
-      display_error() #takes 1.5 seconds
+      if response.success?
+        log("Successfully sent #{card}")
+        display_success() #takes 1.5 seconds
+      else
+        log("ERROR: got #{response.status} sending #{card}: #{response.body}")
+        display_error() #takes 1.5 seconds
+      end
+    rescue Faraday::ConnectionFailed
+      log("ERROR: No network connection")
     end
   end
 end
