@@ -35,7 +35,7 @@ end
 def send_card(card_number, config)
   Faraday.post(
     config["url"],
-    { rifd: card_number }
+    { rfid: card_number }
   )
 end
 
