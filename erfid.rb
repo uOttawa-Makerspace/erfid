@@ -10,12 +10,12 @@ NO_TAG = -90
 DISCONNECTED = -1
 
 def get_mac
-	address = `ifconfig eth0 | grep HW | awk '{print $5}' > mac`
-	if address.match("([0-9a-fA-F][0-9a-fA-F]:){5}([0-9a-fA-F][0-9a-fA-F])$")
-	  return address
-	else
-	  return "unknown"
-	end
+  address = `ifconfig eth0 | grep HW | awk '{print $5}' > mac`
+  if address.match("([0-9a-fA-F][0-9a-fA-F]:){5}([0-9a-fA-F][0-9a-fA-F])$")
+    return address
+  else
+    return "unknown"
+  end
 end
 
 def read_config
