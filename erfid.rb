@@ -9,6 +9,15 @@ require "pi_piper"
 NO_TAG = -90
 DISCONNECTED = -1
 
+def get_mac
+	address = `ifconfig eth0 | grep HW | awk '{print $5}' > mac`
+	if address.match("([0-9a-fA-F][0-9a-fA-F]:){5}([0-9a-fA-F][0-9a-fA-F])$")
+	  return address
+	else
+	  return "unknown"
+	end
+end
+
 def read_config
   JSON.parse(File.read(File.join(File.dirname(__FILE__),"./config.json")))
 end
@@ -32,10 +41,10 @@ def read_card(reader)
   end
 end
 
-def send_card(card_number, config)
+def send_card(card_number, mac_address, config)
   Faraday.post(
     config["url"],
-    { rfid: card_number }
+    { rfid: card_number, mac_address: mac_address }
   )
 end
 
@@ -87,6 +96,7 @@ def main
   log("Staring up!")
   config = read_config()
   reader = get_reader()
+  mac_address =  get_mac()
 
   loop do
     begin
@@ -96,7 +106,7 @@ def main
 
       log("Read card: #{card}")
 
-      response = send_card(card, config)
+      response = send_card(card, mac_address, config)
 
       if response.success?
         log("Successfully sent #{card}")
