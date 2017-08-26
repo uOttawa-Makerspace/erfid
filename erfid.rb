@@ -15,7 +15,7 @@ def get_mac(interface)
 	log("Found #{interface} mac: #{address}")
     return address
   else
-	log("#{address} not a valid mac address")
+	log("ERROR: got #{address} which is not a valid mac address")
     return "unknown"
   end
   rescue RuntimeError => e
