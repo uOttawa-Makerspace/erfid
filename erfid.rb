@@ -9,13 +9,17 @@ require "pi_piper"
 NO_TAG = -90
 DISCONNECTED = -1
 
-def get_mac
-  address = `ifconfig eth0 | grep HW | awk '{print $5}'`
+def get_mac(interface)
+  address = `ifconfig #{interface} | grep HW | awk '{print $5}'`
   if address.match("([0-9a-fA-F][0-9a-fA-F]:){5}([0-9a-fA-F][0-9a-fA-F])$")
+	log("Found #{interface} mac: #{address}")
     return address
   else
+	log("#{address} not a valid mac address")
     return "unknown"
   end
+  rescue RuntimeError => e
+	error(e)
 end
 
 def read_config
@@ -96,7 +100,7 @@ def main
   log("Staring up!")
   config = read_config()
   reader = get_reader()
-  mac_address =  get_mac()
+  mac_address =  get_mac('wlan0')
 
   loop do
     begin
@@ -109,10 +113,10 @@ def main
       response = send_card(card, mac_address, config)
 
       if response.success?
-        log("Successfully sent #{card}")
+        log("Successfully sent #{card} @ #{mac_address}")
         display_success() #takes 1.5 seconds
       else
-        log("ERROR: got #{response.status} sending #{card}: #{response.body}")
+        log("ERROR: got #{response.status} sending #{card} @ #{mac_address}: #{response.body}")
         display_error() #takes 1.5 seconds
       end
     rescue Faraday::ConnectionFailed
