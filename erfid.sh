@@ -18,7 +18,7 @@ case "$1" in
   start)
     echo "Starting erfid, run sudo tmux attach"
     # run application you want to start
-    /usr/bin/tmux new-session -d -s erfid 'sudo ruby /home/pi/erfid/erfid.rb'
+    /usr/bin/tmux new-session -d -s erfid 'sudo ruby /home/pi/erfid-wifi/erfid/erfid.rb'
     ;;
   stop)
     echo "Stopping erfid"
