@@ -123,9 +123,10 @@ def main
       response = send_card(card, mac_address, config)
 
       if response.success?
-		log(response.success)
+		rfid_status = JSON.parse(response.body)['success']
+		log(rfid_status)
         log("Successfully sent #{card} @ #{mac_address}")
-        display_success(response.success) #takes 1.5 seconds
+        display_success(rfid_status) #takes 1.5 seconds
       else
         log("ERROR: got #{response.status} sending #{card} @ #{mac_address}: #{response.body}")
         display_error() #takes 1.5 seconds
