@@ -61,17 +61,23 @@ def error(message)
   exit(-1)
 end
 
-def display_success
-  @green_led ||= PiPiper::Pin.new(:pin => 23, :direction => :out)
-  3.times do
-    @green_led.on
-    sleep(0.5)
-    @green_led.off
+def display_success(status)
+  if status == "RFID sign in" || status == "RFID exist"
+	3.times do
+	  @green_led.on
+	  sleep(0.5)
+	  @green_led.off
+	end
+  elsif status == "RFID sign out"
+	3.times do
+	  @yellow_led.on
+	  sleep(0.5)
+	  @yellow_led.off
+	end
   end
 end
 
 def display_error
-  @red_led ||= PiPiper::Pin.new(:pin => 24, :direction => :out)
   3.times do
     @red_led.on
     sleep(0.5)
@@ -97,11 +103,15 @@ trap('INT') {
 #######################################
 
 def main
+  @green_led ||= PiPiper::Pin.new(:pin => 23, :direction => :out)
+  @yellow_led ||= PiPiper::Pin.new(:pin => 25, :direction => :out)
+  @red_led ||= PiPiper::Pin.new(:pin => 24, :direction => :out)
+  
   log("Staring up!")
   config = read_config()
   reader = get_reader()
   mac_address =  get_mac('wlan0')
-
+ 
   loop do
     begin
       card = read_card(reader)
@@ -113,8 +123,9 @@ def main
       response = send_card(card, mac_address, config)
 
       if response.success?
+		status = JSON.parse(response.body)['success']
         log("Successfully sent #{card} @ #{mac_address}")
-        display_success() #takes 1.5 seconds
+        display_success(status) #takes 1.5 seconds
       else
         log("ERROR: got #{response.status} sending #{card} @ #{mac_address}: #{response.body}")
         display_error() #takes 1.5 seconds
