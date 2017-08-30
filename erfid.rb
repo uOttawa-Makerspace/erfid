@@ -124,7 +124,7 @@ def main
 
       if response.success?
 		status = JSON.parse(response.body)['success']
-        log("Successfully sent #{card} @ #{mac_address}")
+        log("Successfully sent #{card} @ #{mac_address}. User #{status[4..]}")
         display_success(status) #takes 1.5 seconds
       else
         log("ERROR: got #{response.status} sending #{card} @ #{mac_address}: #{response.body}")
