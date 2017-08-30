@@ -123,9 +123,9 @@ def main
       response = send_card(card, mac_address, config)
 
       if response.success?
-		status = JSON.parse(response.body)['success']
-        log("Successfully sent #{card} @ #{mac_address}. User #{status[4,-1]}")
-        display_success(status) #takes 1.5 seconds
+		log(response.status)
+        log("Successfully sent #{card} @ #{mac_address}")
+        display_success(response.status) #takes 1.5 seconds
       else
         log("ERROR: got #{response.status} sending #{card} @ #{mac_address}: #{response.body}")
         display_error() #takes 1.5 seconds
